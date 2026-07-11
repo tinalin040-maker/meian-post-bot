@@ -1,0 +1,33 @@
+name: Meian Bot Cloud Monitor
+
+on:
+  schedule:
+    # 每天 UTC 12:00 執行 (等於台灣時間 20:00，在 19:45 發布排程後的 15 分鐘)
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    # 允許手動從 GitHub 網頁觸發執行進行測試
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install gspread requests pytz
+
+      - name: Run Cloud Monitor
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+        run: python tools/cloud_monitor.py

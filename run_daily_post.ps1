@@ -25,9 +25,22 @@ $AllowedTools = @(
     "mcp__claude-in-chrome__javascript_tool"
 )
 
-$null | claude -p $Prompt `
-    --chrome `
-    --allowedTools $AllowedTools `
-    *> $RunLog
+try {
+    # 執行 Claude Bot
+    $null | claude -p $Prompt `
+        --chrome `
+        --allowedTools $AllowedTools `
+        *> $RunLog
 
-Write-Output "執行紀錄已寫入: $RunLog"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Claude 執行失敗，離開代碼為 $LASTEXITCODE"
+    }
+    Write-Output "執行紀錄已寫入: $RunLog"
+}
+catch {
+    $ErrMsg = $_.ToString()
+    Write-Output "偵測到異常，正在發送 LINE 警報：$ErrMsg"
+    
+    # 呼叫 Python 發送警報至 LINE
+    & .venv/Scripts/python.exe tools/send_alert.py "偵測到執行異常！`n原因：$ErrMsg`n`n請確認 Chrome 瀏覽器已開啟，且 Claude Code 擴充功能已成功連線！"
+}
