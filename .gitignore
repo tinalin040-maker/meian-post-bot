@@ -1,0 +1,43 @@
+# 環境變數
+.env
+.env.local
+.env.*.local
+credentials/
+*service_account*
+*.json
+!skills/*.json
+!package.json
+
+
+# 日誌與備份
+logs/
+backup/
+
+# 系統檔
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 依賴
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 建構產物
+dist/
+build/
+out/
+*.egg-info/
+
+# 暫存
+*.tmp
+*.bak
+*.cache
