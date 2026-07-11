@@ -5,7 +5,16 @@ $ErrorActionPreference = "Stop"
 $ProjectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $ProjectDir
 
-$Prompt = Get-Content -Raw -Encoding UTF8 (Join-Path $ProjectDir "skills\daily_post.md")
+$WorkflowDoc = Get-Content -Raw -Encoding UTF8 (Join-Path $ProjectDir "skills\daily_post.md")
+$Prompt = @"
+請依據以下每日貼文流程文件的指示，立刻執行今日的美安商品貼文自動化流程。
+
+【指示】
+請在 Chrome 瀏覽器中執行選品，並寫入 Google Sheets 紀錄，完成圖片下載、轉檔與上傳至 Catbox，最後呼叫 `tools/send_line_message.py` 完成 LINE 推播。
+
+【流程文件內容】
+$WorkflowDoc
+"@
 
 $LogDir = Join-Path $ProjectDir "logs"
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
