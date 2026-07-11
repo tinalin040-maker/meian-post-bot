@@ -175,3 +175,18 @@ ADR 風格紀錄。
   - 使用者必須一次性將 `liff/index.html` 部署至 HTTPS 平台，並在 LINE Developers 後台註冊 LIFF 頻道取得 LIFF ID 並寫入 `.env`。
   - `run_daily_post.ps1` 增加了 `$null |` 的 stdin 管道轉發，並改用動態路徑解析，以排除 CJK 編碼造成的執行錯誤。
 
+### [011] 自動查核防錯機制與本機+雲端雙向警報監控系統
+- Date: 2026-07-11
+- Agent: Antigravity
+- 背景: 使用者對於貼文金額、網址連結有 100% 正確性的嚴格要求（金額錯誤對業務有重大負面影響）。同時使用者需要在每天發文時間 19:45 左右，如果電腦沒開機、或 Chrome/Claude 執行失敗時，能即時收到通知警報，防止貼文中斷。並且由於 Windows 排程器在處理中文路徑時會產生 CP950/UTF-8 字元亂碼 bug，導致排程靜默失效（執行碼為 1）。
+- 決策: 
+  1. **自動校驗**：在寫入 JSON 前新增價格與連結的防呆校驗（比對原始特價與網頁價格、檢測 URL HTTP 狀態碼、限制 5 行文案格式），校驗失敗則拋出異常阻斷發送。
+  2. **本地警報**：新增 `tools/send_alert.py` 本地 LINE 警報機制，並修改本機 `run_daily_post.ps1` 啟動腳本，以 `try-catch` 包裹主程序。若執行失敗，會立刻透過 LINE Push API 發送警報至 `2-shop` 小群組。
+  3. **雲端定時監控**：新增 GitHub Actions 每日 UTC 12:00（台北時間 20:00，排程後 15 分鐘）執行的 `.github/workflows/monitor.yml` 雲端監控任務。呼叫 `tools/cloud_monitor.py` 連線並檢查 Google Sheets 中是否寫入今日排程資料，若無（代表本機沒開機或斷電當機），雲端直接發送 LINE 警告訊息。
+  4. **排程路徑相容性修復**：建立 ASCII 純英文字元路徑的啟動轉發檔 `C:\ai-agent-center\run_meian_bot.bat`（內部設定 `cd` 切換至中文目錄），並另存 `run_daily_post.ps1` 為 UTF-8 BOM 格式，徹底避開 Windows 排程器與 PowerShell 5.1 對中文路徑及字元的亂碼 Bug。
+- 理由: 提供軍規級的自動校驗與雙重防漏洞警報機制，並徹底排除 Windows 系統平台的亂碼啟動 bug，保證系統極致穩定。
+- 影響: 
+  - 本機與雲端監控均已整合 LINE 與 Google Sheets APIs，並通過手動與雲端實測執行，回傳 exit code 0，穩定可靠。
+  - 將專案推送至 GitHub 公開專案庫託管（安全忽略私密 env 金鑰，金鑰已上傳至 GitHub Secrets 安全加密保存）。
+
+

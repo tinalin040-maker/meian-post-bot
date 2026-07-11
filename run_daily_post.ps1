@@ -1,4 +1,4 @@
-# 由 Windows 工作排程器每天 09:00 觸發。
+﻿# 由 Windows 工作排程器每天 09:00 觸發。
 # 前置需求：這台電腦的 Chrome 必須已開啟並登入 shop.com，Claude Code 的 Chrome 擴充功能已連線。
 
 $ErrorActionPreference = "Stop"
