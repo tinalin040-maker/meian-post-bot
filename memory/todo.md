@@ -15,6 +15,7 @@
 | [x] | Antigravity | 2026-07-11 | 部署本地 send_alert.py 與 GitHub Actions 雲端定時監控雙警報系統 | Antigravity |
 | [x] | Antigravity | 2026-07-11 | 修正 Windows 排程器路徑中文亂碼 bug，建立 run_meian_bot.bat 啟動轉發檔 | Antigravity |
 | [x] | Antigravity | 2026-07-11 | 將程式庫完全開源並推送至 GitHub 公開專案庫，安全加密 Secrets | Antigravity |
+| [x] | Antigravity | 2026-07-12 | 在母資料夾下建立獨立子專案 `meian-nocode-liff-helper` 與 `meian-gemini-free-bot` 並推送到各自的獨立 GitHub 專案庫 | Antigravity |
 
 ---
 

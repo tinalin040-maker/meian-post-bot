@@ -41,3 +41,8 @@ out/
 *.tmp
 *.bak
 *.cache
+
+# 獨立子專案
+meian-nocode-liff-helper/
+meian-gemini-free-bot/
+

@@ -4,15 +4,19 @@
 
 ---
 
-## 最後狀態 (2026-07-11 22:15 Antigravity)
+## 最後狀態 (2026-07-12 11:55 Antigravity)
 
-1. **完成項**：實現了貼文價格、連結與格式之自動比對與狀態碼查核防錯機制；實作了 LINE LIFF 滿版卡片分享（0官方推播扣點）的完整部署與推送；修復了 Windows 排程器中文路徑亂碼 bug（建立 `C:\ai-agent-center\run_meian_bot.bat`，另存 `run_daily_post.ps1` 為 UTF-8 BOM 格式）；部署了本機 `send_alert.py` 與 GitHub Actions `cloud_monitor.py` 雙重定時防漏監控警報系統，並配置 Repository Secrets；成功上傳至 GitHub 公開專案庫。
-2. **下一步**：使用者只需在每天晚上確保電腦開機與 Chrome 開啟即可。無需其他動作，程式已進入完全自動化維護狀態。
+1. **完成項**：依使用者要求，在母專案下新建了 2 個獨立子目錄，分別初始化 Git 並發布至獨立的 GitHub 專案中，解決教學端學生免費使用的需求：
+   - 專案一（免寫程式版）：[meian-nocode-liff-helper](https://github.com/tinalin040-maker/meian-nocode-liff-helper)（網址為 [https://tinalin040-maker.github.io/meian-nocode-liff-helper/](https://tinalin040-maker.github.io/meian-nocode-liff-helper/)），附帶文案生成表單與一鍵分享功能。
+   - 專案二（程式自動化版）：[meian-gemini-free-bot](https://github.com/tinalin040-maker/meian-gemini-free-bot)，使用 Playwright 爬蟲搭配免費 Google Gemini API。
+2. **下一步**：無，專案完全交付。
 3. **阻塞**：無。
-4. **注意事項**：若需手動補發今日貼文，可在終端機執行 `python tools/send_line_message.py output/2026-07-11.json` 來繞過巢狀 CLI 在背景的權限詢問。PowerShell 腳本必須保持 UTF-8 BOM（utf-8-sig）格式以防舊版 PowerShell 5.1 解析中文註解報錯。
+4. **注意事項**：這兩個子資料夾已加入母專案之 `.gitignore`，彼此 Git 歷史完全獨立。
 5. **進度**：100%
 
 ## 歷史狀態
+
+### 狀態 (2026-07-11 22:15 Antigravity)
 
 ### 狀態 (2026-07-11 10:10 Antigravity)
 

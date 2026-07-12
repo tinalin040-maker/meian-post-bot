@@ -11,5 +11,6 @@
 | 2026-07-06 | Claude | 使用者測試後發現Flex卡片長按無法轉傳（LINE平台限制），改用Pillow合成圖片+catbox.moe免帳號圖床+LINE原生圖片訊息，重新測試推播3樣商品成功；同步更新skills/daily_post.md、PROJECT.md、decisions.md [008]；待使用者確認手機上長按轉傳是否正常，之後才進行Windows排程設定 |
 | 2026-07-06 | Claude | 使用者確認可轉傳但畫面太小，經多輪調整定案：emoji改用Segoe UI Emoji彩色字型混排（不再全部過濾）、字體放大2.25倍、名稱/金額/介紹/CTA之間留白加大；確認過「滿版自動顯示」與「可長按轉傳」在LINE上互斥無法兼得，使用者選擇維持可轉傳版本；貼文格式正式定案，用schtasks建立Windows工作排程器每日09:00排程（MeianDailyPost），登記scheduled/008_meian-daily-post.md，專案核心工作完成，僅待明天首次自動觸發驗證 |
 | 2026-07-11 10:10 | Antigravity | 實作 LINE LIFF 一鍵分享功能，開發 liff/index.html 網頁與對應之 tools/send_line_message.py 邏輯，藉由 Base64 壓縮商品資料並產生 LIFF 連結發送至 2-shop。使用者點擊連結即可免費轉傳「滿版 Flex 貼文」至大群組，徹底解決 Flex 無法轉傳與推播扣點昂貴之痛點。成功手動發送測試，並提供詳細教學 (liff_setup_guide.md)。 |
+| 2026-07-12 11:55 | Antigravity | 建立 `meian-nocode-liff-helper`（免程式碼表單版）與 `meian-gemini-free-bot`（Python + Gemini API 自動化版）兩個獨立的子專案資料夾，分別初始化獨立 Git，成功建立並推送到各自的 GitHub 儲存庫以供免費教學使用。 |
 | 2026-07-11 22:15 | Antigravity | 建立價格、連結與 5 行文案查核防錯機制；部署本機與雲端監控 LINE 雙警報系統；建立 `C:\ai-agent-center\run_meian_bot.bat` 啟動檔與 UTF-8 BOM 修正，解決工作排程器中文路徑亂碼 bug；完成 GitHub 公開儲存庫推送，並手動測試推播與 Sheets 同步完全正常。 |
 
