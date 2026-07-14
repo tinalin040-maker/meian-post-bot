@@ -57,8 +57,11 @@ def build_liff_url(items: list[dict]) -> str:
     encoded_bytes = base64.urlsafe_b64encode(json_data.encode("utf-8"))
     encoded_str = encoded_bytes.decode("utf-8")
 
-    # 組合連結，同時在 query 傳入 liffId 以便 LIFF 網頁自動讀取免寫死
-    long_url = f"https://liff.line.me/{liff_id}?data={encoded_str}&liffId={liff_id}"
+    import time
+    cb = int(time.time())
+
+    # 組合連結，同時在 query 傳入 liffId 以便 LIFF 網頁自動讀取免寫死，&cb 用於破壞 LINE 客戶端 WebView 快取
+    long_url = f"https://liff.line.me/{liff_id}?data={encoded_str}&liffId={liff_id}&cb={cb}"
     return shorten_url(long_url)
 
 
