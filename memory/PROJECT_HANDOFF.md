@@ -4,7 +4,23 @@
 
 ---
 
-## 最後狀態 (2026-07-12 11:55 Antigravity)
+## 最後狀態 (2026-07-14 21:15 Antigravity)
+
+1. **完成項**：解決了 Catbox 伺服器爆滿（HTTP 412）導致每日貼文排程中斷卡住的問題。為 `tools/compose_image.py` 實作了圖床上傳 Fallback 機制，當 Catbox 主站上傳失敗時，會自動嘗試 Litterbox（保存72小時）與 Uguu.se（保存24小時），確保流程不中斷。今日 (7/14) 已透過 Litterbox 成功補發貼文至 2-shop 群組並完成 Google Sheets 與 JSON 存檔。
+2. **下一步**：觀察後續每日 09:00 工作排程器執行時，Fallback 圖床是否能持續穩定運作；若 Catbox 主站恢復，會自動恢復使用 Catbox。
+3. **阻塞**：無。
+4. **注意事項**：Litterbox 保存期限為 72 小時，對每日貼文與當日分享完全夠用，但若使用者需要追溯數天前的貼文圖片，可能會因過期而無法顯示，此屬臨時性的 fallback 方案。
+5. **進度**：100% (核心功能穩定運作，且具備圖床容錯能力)
+
+### 狀態 (2026-07-12 19:45 Claude)
+
+1. **完成項**：Windows工作排程器於19:45觸發`claude -p`，成功自動完成當日完整流程：Chrome選品（食品:築地一番鮮櫻桃、非食品:安德森保羅牙膏、品牌:柔雅柔膚沐浴露，均為`daily_post.md`規則下有明確價格數字的商品）、9張圖片下載轉檔上傳Catbox、Google Sheets寫入3筆、LIFF連結推播至2-shop群組。修正了`tools/write_to_sheets.py`第18行寫死讀取`2026-07-11.json`的bug（改為動態讀取當日日期檔案），這個bug原本會導致每次自動同步都寫入前一次的舊資料，因為`send_line_message.py`結尾會自動呼叫這支腳本。
+2. **下一步**：持續觀察排程是否每日穩定執行；若之後品牌選品連續撞到「近7天用過」的品牌導致湊不滿3樣，可考慮擴充品牌清單記錄機制（目前是agent每次手動翻`latest.md`/`output/*.json`比對，尚無自動化去重清單）。
+3. **阻塞**：無。
+4. **注意事項**：這兩個子資料夾已加入母專案之 `.gitignore`，彼此 Git 歷史完全獨立。
+5. **進度**：100%（核心功能穩定運作中）
+
+### 狀態 (2026-07-12 11:55 Antigravity)
 
 1. **完成項**：依使用者要求，在母專案下新建了 2 個獨立子目錄，分別初始化 Git 並發布至獨立的 GitHub 專案中，解決教學端學生免費使用的需求：
    - 專案一（免寫程式版）：[meian-nocode-liff-helper](https://github.com/tinalin040-maker/meian-nocode-liff-helper)（網址為 [https://tinalin040-maker.github.io/meian-nocode-liff-helper/](https://tinalin040-maker.github.io/meian-nocode-liff-helper/)），附帶文案生成表單與一鍵分享功能。
@@ -39,11 +55,11 @@
 | 欄位 | 內容 |
 |---|---|
 | 任務 | 每日自動選品+推播LINE群組（2-shop）的自動化流程 |
-| 進度 | 100%：已完成核心功能開發、自動查核防錯、防亂碼 Windows 啟動轉發、本地與雲端監控雙警報系統，並已完成 Git 上傳。 |
-| 下一步 | 使用者每晚保持電腦開機、Chrome 開啟及 Claude 登入，Bot 即可完全自動且 0 扣點發文。 |
+| 進度 | 100%：已完成核心功能開發、自動查核防錯、防亂碼 Windows 啟動轉發、本地與雲端監控雙警報系統，並已完成 Git 上傳。新增圖床 Fallback 機制（支援 Litterbox 72h 與 Uguu.se 24h）。 |
+| 下一步 | 觀察每日自動排程穩定度與 Fallback 圖床運作。 |
 | 阻塞 | 無 |
 | 最後操作 Agent | Antigravity |
-| 最後操作時間 | 2026-07-11 22:15 |
+| 最後操作時間 | 2026-07-14 21:15 |
 
 ---
 
@@ -93,3 +109,5 @@
 | 2026-07-05 | Claude | 需求釐清、技術調查、架構設計與實作 | 詳見 memory/decisions.md [002]-[004] |
 | 2026-07-06 | Claude | 貼文格式定案、改為單一群組「2-shop」架構、LINE帳號改用apple、測試推播成功 | 詳見 memory/decisions.md [006]-[007] |
 | 2026-07-06 | Claude | 改用合成圖片+原生圖片訊息（解決Flex無法轉傳問題）、字體/留白多輪調整定案、建立Windows工作排程器MeianDailyPost | 詳見 memory/decisions.md [008]，登記 scheduled/008_meian-daily-post.md |
+| 2026-07-12 | Claude | 排程首次由19:45觸發成功跑完完整流程（選品+Sheets+圖片+LINE推播），修正write_to_sheets.py寫死日期bug | 詳見 memory/latest.md |
+| 2026-07-14 | Antigravity | 新增圖床 Fallback 機制（Litterbox 72h + Uguu.se 24h）解決 Catbox 412 卡住問題，手動補跑今日貼文流程成功並發送 LINE 分享網址 | 詳見 memory/latest.md |

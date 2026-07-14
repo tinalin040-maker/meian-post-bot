@@ -15,7 +15,12 @@ service_account_path = paths[0]
 print(f"使用憑證: {service_account_path}")
 
 # 讀取今日商品資料
-json_path = r"c:\ai-agent-center\projects\美安貼文bot\output\2026-07-11.json"
+today_str_for_path = datetime.now().strftime("%Y-%m-%d")
+json_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "output",
+    f"{today_str_for_path}.json",
+)
 with open(json_path, "r", encoding="utf-8") as f:
     items = json.load(f)
 

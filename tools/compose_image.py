@@ -215,15 +215,58 @@ def build_composite_image(item: dict, out_path: str) -> None:
 
 
 def upload_to_catbox(path: str) -> str:
-    with open(path, "rb") as f:
-        resp = requests.post(
-            "https://catbox.moe/user/api.php",
-            data={"reqtype": "fileupload"},
-            files={"fileToUpload": f},
-            timeout=30,
-        )
-    resp.raise_for_status()
-    url = resp.text.strip()
-    if not url.startswith("http"):
-        raise RuntimeError(f"catbox 上傳失敗: {url}")
-    return url
+    # 嘗試 1：Catbox 主站
+    try:
+        with open(path, "rb") as f:
+            resp = requests.post(
+                "https://catbox.moe/user/api.php",
+                data={"reqtype": "fileupload"},
+                files={"fileToUpload": f},
+                timeout=30,
+            )
+        if resp.status_code == 200:
+            url = resp.text.strip()
+            if url.startswith("http"):
+                return url
+            else:
+                print(f"Catbox 主站上傳失敗但回傳成功: {url}，嘗試 fallback...")
+    except Exception as e:
+        print(f"Catbox 主站上傳失敗: {e}，嘗試 fallback...")
+
+    # 嘗試 2：Litterbox (保存 72 小時)
+    try:
+        with open(path, "rb") as f:
+            resp = requests.post(
+                "https://litterbox.catbox.moe/resources/internals/api.php",
+                data={"reqtype": "fileupload", "time": "72h"},
+                files={"fileToUpload": f},
+                timeout=30,
+            )
+        if resp.status_code == 200:
+            url = resp.text.strip()
+            if url.startswith("http"):
+                print(f"Litterbox 上傳成功: {url}")
+                return url
+            else:
+                print(f"Litterbox 上傳失敗但回傳成功: {url}，嘗試 fallback...")
+    except Exception as e:
+        print(f"Litterbox 上傳失敗: {e}，嘗試 fallback...")
+
+    # 嘗試 3：Uguu.se (保存 24 小時)
+    try:
+        with open(path, "rb") as f:
+            resp = requests.post(
+                "https://uguu.se/upload.php",
+                files={"files[]": f},
+                timeout=30,
+            )
+        if resp.status_code == 200:
+            res_json = resp.json()
+            if res_json.get("success") and res_json.get("files"):
+                url = res_json["files"][0]["url"]
+                print(f"Uguu.se 上傳成功: {url}")
+                return url
+    except Exception as e:
+        print(f"Uguu.se 上傳失敗: {e}")
+
+    raise RuntimeError("所有圖床 (Catbox, Litterbox, Uguu) 上傳均失敗！")
