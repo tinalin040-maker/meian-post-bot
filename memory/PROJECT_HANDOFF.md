@@ -4,13 +4,15 @@
 
 ---
 
-## 最後狀態 (2026-07-14 21:15 Antigravity)
+## 最後狀態 (2026-07-14 21:25 Antigravity)
 
-1. **完成項**：解決了 Catbox 伺服器爆滿（HTTP 412）導致每日貼文排程中斷卡住的問題。為 `tools/compose_image.py` 實作了圖床上傳 Fallback 機制，當 Catbox 主站上傳失敗時，會自動嘗試 Litterbox（保存72小時）與 Uguu.se（保存24小時），確保流程不中斷。今日 (7/14) 已透過 Litterbox 成功補發貼文至 2-shop 群組並完成 Google Sheets 與 JSON 存檔。
+1. **完成項**：
+   - 解決了 Catbox 伺服器爆滿（HTTP 412）導致每日貼文排程中斷卡住的問題。為 `tools/compose_image.py` 實作了圖床上傳 Fallback 機制，當 Catbox 主站上傳失敗時，會自動嘗試 Litterbox（保存72小時）與 Uguu.se（保存24小時），確保流程不中斷。今日 (7/14) 已透過 Litterbox 成功補發貼文並完成 Google Sheets 與 JSON 存檔。
+   - 發現並修復了未登入狀態下點擊 LIFF 分享連結會跳出 **HTTP 400 錯誤**的問題。原因在於 `liff.login()` 參數顯式傳入了包含極長 base64 資料的 `window.location.href` 作為 `redirectUri`，導致 LINE 驗證服務拒絕。現已將其移除改用 LIFF SDK 預設登入行為（乾淨的 callback 網址），此修復已同步套用在 `liff/index.html` 以及 `meian-nocode-liff-helper/index.html`（免寫程式版），並皆已 PUSH 部署上線。
 2. **下一步**：觀察後續每日 09:00 工作排程器執行時，Fallback 圖床是否能持續穩定運作；若 Catbox 主站恢復，會自動恢復使用 Catbox。
 3. **阻塞**：無。
 4. **注意事項**：Litterbox 保存期限為 72 小時，對每日貼文與當日分享完全夠用，但若使用者需要追溯數天前的貼文圖片，可能會因過期而無法顯示，此屬臨時性的 fallback 方案。
-5. **進度**：100% (核心功能穩定運作，且具備圖床容錯能力)
+5. **進度**：100% (核心功能穩定運作，具備圖床容錯與未登入登入容錯能力)
 
 ### 狀態 (2026-07-12 19:45 Claude)
 
@@ -55,11 +57,11 @@
 | 欄位 | 內容 |
 |---|---|
 | 任務 | 每日自動選品+推播LINE群組（2-shop）的自動化流程 |
-| 進度 | 100%：已完成核心功能開發、自動查核防錯、防亂碼 Windows 啟動轉發、本地與雲端監控雙警報系統，並已完成 Git 上傳。新增圖床 Fallback 機制（支援 Litterbox 72h 與 Uguu.se 24h）。 |
+| 進度 | 100%：已完成核心功能開發、自動查核防錯、防亂碼 Windows 啟動轉發、本地與雲端監控雙警報系統，並已完成 Git 上傳。新增圖床 Fallback 機制與 liff.login() 400 錯誤修復。 |
 | 下一步 | 觀察每日自動排程穩定度與 Fallback 圖床運作。 |
 | 阻塞 | 無 |
 | 最後操作 Agent | Antigravity |
-| 最後操作時間 | 2026-07-14 21:15 |
+| 最後操作時間 | 2026-07-14 21:25 |
 
 ---
 
@@ -110,4 +112,4 @@
 | 2026-07-06 | Claude | 貼文格式定案、改為單一群組「2-shop」架構、LINE帳號改用apple、測試推播成功 | 詳見 memory/decisions.md [006]-[007] |
 | 2026-07-06 | Claude | 改用合成圖片+原生圖片訊息（解決Flex無法轉傳問題）、字體/留白多輪調整定案、建立Windows工作排程器MeianDailyPost | 詳見 memory/decisions.md [008]，登記 scheduled/008_meian-daily-post.md |
 | 2026-07-12 | Claude | 排程首次由19:45觸發成功跑完完整流程（選品+Sheets+圖片+LINE推播），修正write_to_sheets.py寫死日期bug | 詳見 memory/latest.md |
-| 2026-07-14 | Antigravity | 新增圖床 Fallback 機制（Litterbox 72h + Uguu.se 24h）解決 Catbox 412 卡住問題，手動補跑今日貼文流程成功並發送 LINE 分享網址 | 詳見 memory/latest.md |
+| 2026-07-14 | Antigravity | 新增圖床 Fallback 機制解決 Catbox 412 問題並補跑貼文成功；修復 liff.login() 參數避免未登入時出現 HTTP 400 錯誤，同步更新 liff 與 meian-nocode-liff-helper 專案並已 PUSH 上線 | 詳見 memory/latest.md |
