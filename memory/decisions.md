@@ -190,3 +190,14 @@ ADR 風格紀錄。
   - 將專案推送至 GitHub 公開專案庫託管（安全忽略私密 env 金鑰，金鑰已上傳至 GitHub Secrets 安全加密保存）。
 
 
+### [012] 圖床 Fallback 容錯機制與 LINE 快取破壞（Cache Buster）設計
+- Date: 2026-07-14
+- Agent: Antigravity
+- 背景:
+  1. 2026-07-14 每日貼文流程執行時，Catbox.moe 官方伺服器爆滿（回傳 HTTP 412 暫停上傳），導致商品合成圖片無法上傳，進而使整個自動化貼文排程卡死中斷。
+  2. 修復前端網頁 `index.html` 中的 `liff.login()` 參數後，手機 LINE In-App Browser 會因為極強的網頁快取（Cache），持續載入舊版網頁執行含有 `redirectUri` 的登入，導致依然拋出 HTTP 400 錯誤。
+- 決策:
+  1. **圖床容錯**：修改 `tools/compose_image.py` 中的 `upload_to_catbox()`，當 Catbox 主站上傳失敗時，自動依序 fallback 嘗試上傳到 Litterbox（Catbox 官方臨時服務，保存72小時）與 Uguu.se（保存24小時），全數失敗才丟出例外。
+  2. **快取破壞**：修改 `tools/send_line_message.py` 組裝 LIFF 連結時，在 query string 後方加上 `&cb=<Unix時間戳記>` 參數。由於每次產生的 URL 都不同，能強迫手機 LINE WebView 繞過本地快取重新載入最新部署的 `index.html`，成功解決未登入狀態下 OAuth 重定向長度過長引發的 HTTP 400 錯誤。
+- 理由: 解決第三方免費圖床臨時故障的可用性問題，以及 LINE WebView 快取導致修補不生效的痛點，顯著增強自動化流程的魯棒性（Robustness）。
+- 影響: 今日補發貼文已成功運行，圖片順利透過 Litterbox fallback 上傳，且全新 TinyURL 連結在手機 LINE 內不論已登入或未登入環境下均能流暢開啟。
