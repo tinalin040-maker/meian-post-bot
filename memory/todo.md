@@ -16,6 +16,9 @@
 | [x] | Antigravity | 2026-07-11 | 修正 Windows 排程器路徑中文亂碼 bug，建立 run_meian_bot.bat 啟動轉發檔 | Antigravity |
 | [x] | Antigravity | 2026-07-11 | 將程式庫完全開源並推送至 GitHub 公開專案庫，安全加密 Secrets | Antigravity |
 | [x] | Antigravity | 2026-07-12 | 在母資料夾下建立獨立子專案 `meian-nocode-liff-helper` 與 `meian-gemini-free-bot` 並推送到各自的獨立 GitHub 專案庫 | Antigravity |
+| [x] | Antigravity | 2026-07-16 | 完全修復 run_meian_bot.bat 與 run_daily_post.ps1 的中文編碼與語法解析亂碼 bug | Antigravity |
+| [x] | Antigravity | 2026-07-16 | 重構 Gemini 貼文方案，升級至新官方 google-genai 並更換為 gemini-2.0-flash | Antigravity |
+| [ ] | Antigravity | 2026-07-16 | 使用者更換有額度的 Gemini API Key 並寫入 .env 以啟用免費選品發文方案 | 使用者 |
 
 ---
 
