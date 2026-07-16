@@ -35,13 +35,13 @@ if not GEMINI_API_KEY:
     sys.exit(1)
 
 try:
-    import google.generativeai as genai
+    from google import genai
 except ImportError:
-    print("未安裝 google-generativeai 套件。正在嘗試安裝...")
-    subprocess.run([sys.executable, "-m", "pip", "install", "google-generativeai"], check=True)
-    import google.generativeai as genai
+    print("未安裝 google-genai 套件。正在嘗試安裝...")
+    subprocess.run([sys.executable, "-m", "pip", "install", "google-genai"], check=True)
+    from google import genai
 
-genai.configure(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 def get_shop_data_with_playwright():
@@ -185,8 +185,10 @@ def select_and_generate_copy(hot_text: str, daily_text: str) -> list[dict]:
 {daily_text[:20000]}
 """
 
-    model = genai.GenerativeModel("gemini-2.5-flash")
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     
     text = response.text.strip()
     if text.startswith("```json"):
