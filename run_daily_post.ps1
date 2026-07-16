@@ -1,4 +1,4 @@
-﻿# 由 Windows 工作排程器每天 09:00 觸發。
+# 由 Windows 工作排程器每天 09:00 觸發。
 # 前置需求：這台電腦的 Chrome 必須已開啟並登入 shop.com，Claude Code 的 Chrome 擴充功能已連線。
 
 $ErrorActionPreference = "Stop"
@@ -35,7 +35,33 @@ $AllowedTools = @(
 )
 
 try {
-    # 執行 Claude Bot
+    # 讀取 .env 中的 GEMINI_API_KEY
+    $EnvKey = ""
+    $EnvFile = Join-Path $ProjectDir ".env"
+    if (Test-Path $EnvFile) {
+        $EnvContent = Get-Content -Raw -Encoding UTF8 $EnvFile
+        if ($EnvContent -match 'GEMINI_API_KEY=(.+)') {
+            $EnvKey = $Matches[1].Trim()
+        }
+    }
+
+    if ($EnvKey -ne "") {
+        Write-Output "【首選】偵測到 GEMINI_API_KEY，優先執行極速的 Python + Gemini API 自動選品發文方案..."
+        # 執行 gemini_autopost.py
+        & .venv/Scripts/python.exe tools/gemini_autopost.py
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Output "✓ Gemini API 方案執行成功！已完成今日貼文與同步。"
+            exit 0
+        } else {
+            Write-Output "⚠️ Gemini API 方案執行失敗，離開代碼為 $LASTEXITCODE，正在自動 Fallback 切換至 Claude CLI 備援方案..."
+        }
+    } else {
+        Write-Output "未偵測到 GEMINI_API_KEY，將自動使用 Claude CLI 備援方案..."
+    }
+
+    # Fallback 備援：執行原先的 Claude Bot
+    Write-Output "正在啟動 Claude CLI 備援方案..."
     $null | claude -p $Prompt `
         --chrome `
         --allowedTools $AllowedTools `
@@ -44,7 +70,7 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "Claude 執行失敗，離開代碼為 $LASTEXITCODE"
     }
-    Write-Output "執行紀錄已寫入: $RunLog"
+    Write-Output "✓ Claude CLI 方案執行成功！已寫入紀錄: $RunLog"
 }
 catch {
     $ErrMsg = $_.ToString()
