@@ -4,7 +4,16 @@
 
 ---
 
-## 最後狀態 (2026-07-16 21:32 Antigravity)
+## 最後狀態 (2026-07-17 20:32 Antigravity)
+
+1. **完成項**：依使用者反映，將今日 (7/17) 發布之「買嗨森美國加州華盛頓櫻桃禮盒」加上 `(500g 塑膠盒裝)` 容量規格標記，修正 output/2026-07-17.json、連線 Sheets 修正今日品名，並重新調用 send_line_message.py 產生新圖卡與 LINE 分享連結 `https://tinyurl.com/2a3a2hna`。同時升級 `skills/daily_post.md` 的選品規範，強制以後有容量包裝的商品必須在 name 後方標記，防止類似問題再度發生。
+2. **下一步**：持續觀察排程穩定度與 Fallback 圖床運作。
+3. **阻塞**：無。
+4. **注意事項**：⚠️ 價格與連結 100% 正確性鐵律，商品容量為計價與行銷關鍵資訊，不可忽略或模糊。
+5. **進度**：100%（已成功補發並修正容量圖卡資訊）
+
+
+### 狀態 (2026-07-16 21:32 Antigravity)
 
 1. **完成項**：
    - 發現並修復了 Windows 工作排程器引導之批次檔 `C:\ai-agent-center\run_meian_bot.bat` 存在中文字元編碼亂碼導致 `cd` 到專案路徑閃退的問題。已重構為純 ASCII 絕對路徑 powershell 直接呼叫方式。
@@ -60,11 +69,12 @@
 | 欄位 | 內容 |
 |---|---|
 | 任務 | 每日自動選品+推播LINE群組（2-shop）的自動化流程 |
-| 進度 | 100%：已完成核心功能開發、自動查核防錯、防亂碼 Windows 啟動轉發、本地與雲端監控雙警報系統。重構 `run_meian_bot.bat` 排除排程亂碼問題。Gemini API 重構為最新 `google-genai` 套件。 |
+| 進度 | 100%：已完成核心功能開發、自動查核防錯、防編碼亂碼啟動轉發、本地與雲端監控雙警報系統。新增規格與容量標記鐵律，當商品有容量資訊時，強制在 name 中標註以防誤差。 |
 | 下一步 | 觀察每日自動排程穩定度與 Fallback 圖床運作。 |
 | 阻塞 | 無 |
 | 最後操作 Agent | Antigravity |
-| 最後操作時間 | 2026-07-16 21:32 |
+| 最後操作時間 | 2026-07-17 20:32 |
+
 
 
 ---
@@ -118,3 +128,6 @@
 | 2026-07-12 | Claude | 排程首次由19:45觸發成功跑完完整流程（選品+Sheets+圖片+LINE推播），修正write_to_sheets.py寫死日期bug | 詳見 memory/latest.md |
 | 2026-07-14 | Antigravity | 新增圖床 Fallback 機制解決 Catbox 412 錯誤；修復 liff.login() 與新增 cb 快取破壞參數解決 LINE 400 錯誤；補跑貼文成功，同步更新相關專案並已 PUSH 上線 | 詳見 memory/latest.md |
 | 2026-07-16 | Antigravity | 修復排程批次檔中文亂碼 bug，重構 run_daily_post.ps1 為純英文 ASCII 以防 PowerShell 解析出錯；升級 Gemini 方案至新版 google-genai 並補發當日貼文成功 | 詳見 memory/latest.md |
+| 2026-07-17 | Claude | 排程 19:45 正常觸發執行，因 Gemini key 額度限制自動 fallback 啟動 Claude CLI，成功完成選品、發文與 sheets 同步 | 詳見 memory/PROJECT_HANDOFF.md |
+| 2026-07-17 | Antigravity | 依反映修正今日發布櫻桃品名加標規格 (500g 塑膠盒裝)，更新 Sheets 並重新合成圖卡推播新連結成功；更新貼文規範要求未來有規格商品必須標註 | 詳見 memory/latest.md |
+
